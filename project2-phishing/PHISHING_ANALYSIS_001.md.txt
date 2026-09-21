@@ -1,0 +1,73 @@
+# Phishing Email Analysis Report
+
+## Email Metadata
+From: noreply@amaz0n-security.com
+To: customer@gmail.com
+Subject: URGENT: Your Amazon Account Has Been Compromised - Action Required
+Date: September 20, 2026
+Message-ID: <abc123@amaz0n-security.com>
+
+## Headers Analysis
+Sender IP: 45.142.182.99 (suspicious - not Amazon's IP range)
+Reply-To: verify-account@amaz0n-verify.tk
+Authentication: SPF FAIL, DKIM FAIL, DMARC FAIL
+
+Received: from mail.amaz0n-security.com [45.142.182.99]
+X-Originating-IP: [45.142.182.99]
+
+## Body Analysis
+Urgency: YES - "Your account will be closed in 24 hours"
+Example: "Verify your identity immediately or your account will be permanently suspended"
+
+## Links & URLs Found
+1. Displayed Text: "Click Here to Verify Account"
+   Actual URL: https://amaz0n-verify.tk/confirm?user=customer@gmail.com&token=abc123
+   Analysis: Typosquatting (amaz0n vs amazon), suspicious TLD (.tk)
+
+2. Displayed Text: "Update Payment Method"
+   Actual URL: https://45.142.182.99/verify/payment
+   Analysis: Direct IP address (no domain), extremely suspicious
+
+## Attachments
+- Filename: Amazon_Urgent_Alert.exe
+- Type: Executable
+- Risk: CRITICAL - Malware delivery
+
+## Sender Reputation Check
+Domain: amaz0n-security.com (FAKE - real Amazon uses amazon.com)
+Domain Age: 3 days old (very new = RED FLAG)
+WHOIS: Anonymous registration
+Similar Domains: amaz0n-security.tk, amaz0n-verify.tk, amazons-security.com
+
+## Red Flags Identified
+1. Domain typosquatting (amaz0n vs amazon)
+2. SPF/DKIM/DMARC authentication failures
+3. Urgency language and artificial deadlines
+4. Requests for sensitive information (password reset required)
+5. Suspicious sender IP not in Amazon's range
+6. Generic greeting ("Dear Customer")
+7. Executable file attachment (.exe)
+8. Grammar issues ("Verify your identify")
+9. Links shortened/obfuscated with URL parameters
+10. Threatening language about account closure
+
+## IOCs (Indicators of Compromise)
+- Malicious Domain: amaz0n-security.com
+- Malicious IP: 45.142.182.99
+- File Hash: [Would use VirusTotal for exe file]
+- Email Address: verify-account@amaz0n-verify.tk
+
+## Verdict
+**PHISHING - CRITICAL CONFIDENCE**
+
+Attack Type: Credential Harvesting + Malware Distribution
+Target: Amazon users
+Objective: Steal login credentials and distribute malware
+
+## Recommended Actions
+1. Block sender domain and IP
+2. Quarantine all copies of this email
+3. Alert users not to click links or download attachments
+4. Monitor for similar domains/campaigns
+5. Add to phishing filter rules
+6. Report to Amazon Abuse Team
