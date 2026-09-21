@@ -1,0 +1,359 @@
+# SOC Shift Log - Week of September 16-20, 2026
+
+**Shift Duration**: Monday-Friday, 8 AM - 6 PM
+**SOC Analyst**: Adhl
+**Total Alerts Received**: 47
+**Alerts Investigated**: 47
+**True Positives**: 6
+**False Positives**: 38
+**Escalated to IR Team**: 3
+
+---
+
+## Monday, September 16, 2026
+
+### Alert 001 | 09:15 AM
+**Alert Title**: Multiple Failed SSH Logins
+**Source**: Splunk (linux_secure)
+**Severity**: MEDIUM
+**Alert Details**:
+- Source IP: 192.168.2.50
+- Target Server: prod-db-01
+- Failed Attempts: 8 in 5 minutes
+- Target User: root
+
+**Investigation**:
+- Checked source IP: Internal workstation (dev team)
+- Confirmed: Dev team member forgot SSH key passphrase
+- No malicious intent
+- System access denied (no successful login)
+
+**Classification**: FALSE POSITIVE
+**Action Taken**: Contacted developer, provided SSH key reset instructions
+**Resolution Time**: 15 minutes
+
+---
+
+### Alert 002 | 10:42 AM
+**Alert Title**: Suspicious Process Execution - rundll32.exe
+**Source**: EDR (CrowdStrike)
+**Severity**: HIGH
+**Alert Details**:
+- Host: workstation-45 (marketing dept)
+- Process: rundll32.exe
+- Parent Process: explorer.exe
+- Command: rundll32.exe shell32.dll,ShellExec_RunDLL https://suspicious-link.com/malware.exe
+
+**Investigation**:
+- Checked user: Sarah (marketing manager)
+- Confirmed: User opened phishing email with malicious link
+- Rundll32 attempted to execute but was blocked by proxy
+- No malware downloaded
+- Email: "URGENT: Verify Account" from noreply@paypa1-security.com
+
+**Classification**: TRUE POSITIVE (phishing attempt, blocked)
+**Action Taken**:
+  1. Isolated workstation
+  2. Reviewed email logs for other employees
+  3. Sent company-wide phishing alert
+  4. Forwarded to Incident Response for further investigation
+
+**Escalation**: YES - IR Team notified
+**Resolution Time**: 45 minutes
+
+---
+
+### Alert 003 | 02:30 PM
+**Alert Title**: Port Scan Detected
+**Source**: IDS (Suricata)
+**Severity**: MEDIUM
+**Alert Details**:
+- Source IP: 203.0.113.100 (external)
+- Destination: 10.0.0.0/8 (internal network)
+- Ports Scanned: 22, 80, 443, 3306, 5432
+- Scan Duration: 2 minutes
+
+**Investigation**:
+- Checked if known vulnerability scan (routine security test)
+- Confirmed: Scheduled penetration test by external security firm
+- Was approved in change management system
+- Firewall blocked all inbound connections
+
+**Classification**: FALSE POSITIVE (authorized security test)
+**Action Taken**: Logged in change management, no action needed
+**Resolution Time**: 10 minutes
+
+---
+
+### Alert 004 | 04:15 PM
+**Alert Title**: Large Data Transfer Detected
+**Source**: DLP (Data Loss Prevention)
+**Severity**: MEDIUM
+**Alert Details**:
+- User: john.doe@company.com
+- Volume: 2.4 GB
+- Destination: Personal cloud storage (Dropbox)
+- File Type: Database backup (.bak files)
+
+**Investigation**:
+- Checked user permissions: John is database administrator
+- Confirmed with manager: John needed backup for testing environment
+- No sensitive customer data in backup
+- Approval documentation on file
+
+**Classification**: FALSE POSITIVE (authorized backup)
+**Action Taken**: Sent reminder about data handling policies
+**Resolution Time**: 20 minutes
+
+---
+
+## Tuesday, September 17, 2026
+
+### Alert 005 | 08:30 AM
+**Alert Title**: Brute Force Attack on VPN
+**Source**: VPN Logs
+**Severity**: HIGH
+**Alert Details**:
+- Source IP: 45.142.182.50 (external)
+- Target: VPN gateway
+- Failed Attempts: 156 attempts over 30 minutes
+- Target Usernames: admin, root, user, test, vpnuser
+
+**Investigation**:
+- Confirmed: Attack pattern matches credential stuffing
+- All attempts blocked by VPN authentication
+- No successful logins
+- No credentials compromised
+- Identified attacker IP from threat intel feeds
+
+**Classification**: TRUE POSITIVE (credential stuffing attack)
+**Action Taken**:
+  1. Blocked source IP on firewall
+  2. Enabled rate limiting on VPN gateway
+  3. Sent alert to all employees about VPN security
+  4. Reviewed VPN access logs for last 30 days (no breaches)
+
+**Escalation**: YES - IR Team monitoring
+**Resolution Time**: 1 hour
+
+---
+
+### Alert 006 | 11:20 AM
+**Alert Title**: DNS Query to Known Malware Domain
+**Source**: DNS Logs
+**Severity**: MEDIUM
+**Alert Details**:
+- Host: workstation-102 (sales)
+- Queried Domain: malware-c2.xyz
+- Time: 11:15 AM
+- Resolution: FAILED (domain is on blocklist)
+
+**Investigation**:
+- Checked browsing history: No malware access detected
+- Contacted user: "I didn't try to visit that site"
+- Likely: Malware scanning ad injection or browser cache poisoning
+- No actual connection was made (blocked by DNS firewall)
+
+**Classification**: FALSE POSITIVE (blocked by security controls)
+**Action Taken**: Ran antivirus scan on workstation (clean), monitored for future attempts
+**Resolution Time**: 30 minutes
+
+---
+
+### Alert 007 | 02:45 PM
+**Alert Title**: Failed Login - Admin Account
+**Source**: Active Directory Logs
+**Severity**: LOW
+**Alert Details**:
+- Account: administrator (domain admin)
+- Failed Attempts: 1
+- Source: 192.168.1.50 (known workstation)
+- Time: 02:42 PM
+
+**Investigation**:
+- Contacted admin user: User mistyped password
+- No suspicious activity
+- No repeated attempts
+- Normal situation
+
+**Classification**: FALSE POSITIVE (user error)
+**Action Taken**: None
+**Resolution Time**: 5 minutes
+
+---
+
+## Wednesday, September 18, 2026
+
+### Alert 008 | 10:00 AM
+**Alert Title**: Unusual Outbound Traffic - HTTPS
+**Source**: Proxy Logs
+**Severity**: MEDIUM
+**Alert Details**:
+- Host: workstation-67 (finance)
+- Destination: 198.51.100.45:443
+- Volume: 450 MB in 10 minutes
+- Protocol: HTTPS (encrypted)
+
+**Investigation**:
+- Checked destination IP: Unknown server
+- Contacted user: "I'm uploading financial reports to cloud service"
+- Verified: User approved to use Sharepoint
+- Destination IP resolves to Microsoft server
+
+**Classification**: FALSE POSITIVE (legitimate cloud service)
+**Action Taken**: Whitelist destination IP in proxy
+**Resolution Time**: 25 minutes
+
+---
+
+### Alert 009 | 03:30 PM
+**Alert Title**: Privilege Escalation Attempt
+**Source**: EDR (CrowdStrike)
+**Severity**: CRITICAL
+**Alert Details**:
+- Host: server-db-prod (production database)
+- User: service_account
+- Attempted Escalation: UAC bypass attempt
+- Process: cmd.exe spawning with admin privileges
+
+**Investigation**:
+- Immediate response: Isolated server from network
+- Checked logs: Automated backup script ran at 3:25 PM
+- Script has legitimate need for elevated privileges
+- Escalation is expected behavior for this service account
+- No unauthorized access detected
+
+**Classification**: FALSE POSITIVE (expected service behavior)
+**Action Taken**: Restored network connectivity, updated EDR baseline for this server
+**Resolution Time**: 40 minutes
+
+---
+
+## Thursday, September 19, 2026
+
+### Alert 010 | 09:00 AM
+**Alert Title**: File Integrity Monitoring Alert - System32
+**Source**: FIM (Tripwire)
+**Severity**: HIGH
+**Alert Details**:
+- File Modified: C:\Windows\System32\svchost.exe
+- Timestamp: 08:55 AM
+- Change Type: File size increased by 2 KB
+
+**Investigation**:
+- Checked change log: Windows Update KB5032001 installed at 08:50 AM
+- Verified: Legitimate Microsoft patch
+- File hash matches Microsoft signature database
+- No unauthorized modification
+
+**Classification**: FALSE POSITIVE (Windows patch)
+**Action Taken**: Update FIM baseline after patches
+**Resolution Time**: 15 minutes
+
+---
+
+### Alert 011 | 01:15 PM
+**Alert Title**: Ransomware Behavior Detected
+**Source**: EDR Behavioral Analysis
+**Severity**: CRITICAL
+**Alert Details**:
+- Host: workstation-23 (executive assistant)
+- Behavior: Mass file encryption detected
+- Files Affected: 150+ files modified in 2 minutes
+- File Extensions: .encrypted, .locky
+
+**Investigation**:
+- Immediate response: Isolated workstation from network
+- Confirmed: Ransomware infection (Locky variant)
+- Checked backup status: Daily backups available (data recoverable)
+- No lateral movement detected (network isolation prevented spread)
+
+**Classification**: TRUE POSITIVE (ransomware infection)
+**Action Taken**:
+  1. IMMEDIATE ESCALATION to IR Team
+  2. Isolated workstation from network
+  3. Identified infection vector: Phishing email attachment
+  4. Blocked malware C2 servers on firewall
+  5. Searched network for similar infections
+  6. Contacted executive about recovery options
+
+**Escalation**: CRITICAL - Full IR Response
+**Resolution Time**: Ongoing (2+ hours)
+
+---
+
+## Friday, September 20, 2026
+
+### Alert 012 | 10:30 AM
+**Alert Title**: Certificate Expiration Warning
+**Source**: Certificate Monitoring
+**Severity**: MEDIUM
+**Alert Details**:
+- Certificate: www.company.com SSL certificate
+- Days to Expiration: 7 days
+- Renewal Status: Not yet renewed
+
+**Investigation**:
+- Checked renewal process: Certificate renewal in progress
+- Contact IT Operations: New certificate will be deployed by September 25
+- No immediate risk
+
+**Classification**: FALSE POSITIVE (expected warning, in progress)
+**Action Taken**: Logged in ticket system, monitored renewal
+**Resolution Time**: 10 minutes
+
+---
+
+### Alert 013 | 02:00 PM
+**Alert Title**: Suspicious PowerShell Execution
+**Source**: EDR
+**Severity**: HIGH
+**Alert Details**:
+- Host: workstation-15 (HR dept)
+- Process: powershell.exe
+- Command: Get-ADUser -Filter * | Export-CSV "C:\temp\users.csv"
+- Executed By: hr_analyst
+
+**Investigation**:
+- Confirmed: HR analyst needs to export user list for audit
+- Legitimate business requirement
+- Escalation level appropriate for HR role
+- No malicious intent
+
+**Classification**: FALSE POSITIVE (legitimate HR audit)
+**Action Taken**: None
+**Resolution Time**: 10 minutes
+
+---
+
+## Summary Statistics
+
+| Metric | Count |
+|--------|-------|
+| Total Alerts | 13 |
+| True Positives | 3 |
+| False Positives | 10 |
+| Alert Accuracy | 23% |
+| Escalations | 2 |
+| CRITICAL Severity | 2 |
+| HIGH Severity | 4 |
+| MEDIUM Severity | 6 |
+| LOW Severity | 1 |
+
+### True Positives (Actionable Incidents)
+1. **Alert 002**: Phishing attempt (blocked, escalated)
+2. **Alert 005**: Credential stuffing attack (blocked, IP blacklisted)
+3. **Alert 011**: Ransomware infection (critical, full IR response)
+
+### Most Common False Positives
+- User authentication errors
+- Authorized system changes/patches
+- Legitimate cloud service usage
+- Expected service behavior
+
+### Recommendations
+1. **Tuning**: Reduce false positive rate by updating EDR baselines
+2. **User Training**: Phishing was the primary attack vector
+3. **Monitoring**: Improve detection of encrypted traffic anomalies
+4. **Response**: Ransomware isolation procedure worked well - maintain playbook
+5. **Automation**: Create auto-response for credential stuffing attacks
