@@ -1,0 +1,48 @@
+# Detection Rules - SPL Queries
+
+## Rule 1: SSH Brute Force Detection
+
+### Query
+index=main sourcetype=linux_secure "Failed password"
+| stats count by src_ip, user
+| where count > 5
+
+### What It Detects
+Multiple failed SSH login attempts from same source IP to same user account.
+
+### Threshold Reasoning
+- Threshold: count > 5 (5 or more failures)
+- Time Window: Last 5 minutes (default)
+- Why: Normal users might mistype password 1-2 times. 5+ attempts = automated brute force attack.
+
+### Expected Results
+src_ip           | user      | count
+192.168.2.10     | baduser   | 30
+192.168.100.50   | root      | 12
+
+### False Positive Rate
+Low - unless user is legitimately entering wrong password repeatedly.
+
+### Severity
+MEDIUM - Attack attempted but no successful login detected.
+
+---
+
+## Rule 2: Phishing Email Detection
+
+### Query
+index=email 
+| regex sender_domain="(amaz0n|paypa1|microsof)" 
+| where !authenticated 
+| regex attachment=".exe|.zip|.scr" 
+| stats count by sender_domain, attachment, recipient
+| where count > 1
+
+### What It Detects
+Phishing emails with:
+- Typosquatted domain names
+- Failed authentication (SPF/DKIM/DMARC)
+- Suspicious file attachments
+
+### Threshold Reasoning
+-
